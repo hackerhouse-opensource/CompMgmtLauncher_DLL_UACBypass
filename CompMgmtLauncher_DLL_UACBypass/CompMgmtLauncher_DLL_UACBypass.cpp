@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
 	// handle user argument for command
 	if (argc != 2) {
 		// argument is passed directly to WinExec() via DLL
-		printf("[!] Error, you must supply a DLL to load e.g. c:\\Temp\\implant64.dll\n");
+		printf("[!] Error, you must supply a DLL to load e.g. c:\\\\Temp\\\\implant64.dll\n");
 		return EXIT_FAILURE;
 	}
 	// multi-byte string to wide char string to convert user command into pDLL
