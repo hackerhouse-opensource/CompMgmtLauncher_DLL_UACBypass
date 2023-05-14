@@ -8,9 +8,10 @@ CompMgmtLauncher.exe has autoelavate enabled on some versions of Windows
 is enabled and OneDrive is installed by default on Windows 10 Desktop. On
 Windows 11 this provides a useful persistence capability in Microsoft.Sharepoint.exe. 
 
-This issue has a fix in Windows 10 1703 and up as the manifest runs 
-asInvoker, preventing misuse for UAC elevation. OneDrive must be installed 
-to exploit this issue, which is a default configuration on Windows 10.
+The UAC bypass issue has a fix in Windows 10 1703 and up as the manifest runs 
+asInvoker, preventing misuse for UAC elevation, but does not patch the DLL sideloading
+and persistence capability. OneDrive must be installed to exploit the issue, which 
+is a default configuration on Windows 10.
  
 Injecting into CompMgtLauncher.exe behaves differently on x64 and x86,
 DLL sideloading maybe most stable with wininet x86. You can also use this 
