@@ -24,6 +24,6 @@ This exploit has been tested against the following product versions:
 * Windows 10 1507 x64 (tested - not vuln.)
 * Windows 10 1511 x64 (vulnerable) 
 * Windows 10 1607 x64 (tested - not vuln)
-* Windows 11 21996.1 x64 (Persistence / LOLbin / Microsft.Sharepoint.exe)
+* Windows 11 21996.1 x64 (Persistence / LOLbin / Microsoft.Sharepoint.exe)
 
 These files are available under a Attribution-NonCommercial-NoDerivatives 4.0 International license.
