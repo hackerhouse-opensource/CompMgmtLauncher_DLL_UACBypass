@@ -1,4 +1,4 @@
-# CompMgmtLauncher & Sharepoint DLL Search Order hijacking UAC/persist
+# CompMgmtLauncher & Sharepoint DLL Search Order hijacking UAC/persist via OneDrive
 
 CompMgmtLauncher.exe is vulnerable to to a DLL Search Order hijacking 
 vulnerability. The binary, will perform a search within user env for 
@@ -15,8 +15,9 @@ to exploit this issue, which is a default configuration on Windows 10.
 Injecting into CompMgtLauncher.exe behaves differently on x64 and x86,
 DLL sideloading maybe most stable with wininet x86. You can also use this 
 to persist and sideload via Microsoft.Sharepoint.exe which reads from 
-the OneDrive location. To exploit OneDrive, you have to find OneDrive
-version for path which is a moving target and easily read from host.
+the OneDrive location. To exploit via OneDrive, you have to find OneDrive
+version for path which is a moving target but could be enumerated from the 
+host.
  
 This exploit has been tested against the following product versions:
 
