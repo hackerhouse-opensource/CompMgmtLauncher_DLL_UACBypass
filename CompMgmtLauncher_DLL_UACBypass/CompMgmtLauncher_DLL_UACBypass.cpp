@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
 			shinfo.lpFile = L"C:\\Windows\\System32\\CompMgmtLauncher.exe";
 #elif _M_X64
 			shinfo.lpFile = L"CompMgmtLauncher.exe";
-			// fire up Microsoft.Sharepoint.exe if you just want a user sideload
+			// fire up \\Microsoft\\OneDrive\\23.086.0423.0001\\Microsoft.Sharepoint.exe if you just want a user sideload / persistence on login
 #endif
 			shinfo.lpParameters = L""; // parameters
 			shinfo.lpDirectory = NULL;
